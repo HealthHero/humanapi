@@ -6,20 +6,20 @@ require "config/initializers/core_ext"
 
 module HumanApi
 
-	@config = HumanApi::Config.new
+  @config = HumanApi::Config.new
 
-	def self.config
+  def self.config
 
-		if block_given?
-			yield(@config)
-			@config.configure
-		else
-			@config
-		end
+    if block_given?
+      yield(@config)
+      @config.configure
+    else
+      @config
+    end
 
-	end
+  end
 
-	autoload :Human, 'human_api/human'
-	autoload :App, 'human_api/app'
+  autoload :Human, 'human_api/human'
+  autoload :App, 'human_api/app'
 
 end
