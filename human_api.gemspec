@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'human_api/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "human_api"
+  spec.name          = "healt_hero-human_api"
   spec.version       = HumanApi::VERSION
-  spec.authors       = ["Alessio Santo"]
-  spec.email         = ["alessio.santo@pazienti.it"]
+  spec.authors       = ["Justin Aiken"]
+  spec.email         = ["justin@gohealthhero.com"]
   spec.description   = %q{API client for HumanAPI}
   spec.summary       = %q{API client for HumanAPI}
-  spec.homepage      = "https://github.com/Pazienti/humanapi"
+  spec.homepage      = "https://github.com/HealthHero/humanapi"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -20,8 +20,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "nestful", "~> 1.0.4"
-  spec.add_dependency "json", "~> 1.8.1"
-
+  spec.add_dependency "json",    "~> 1.8.1"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
