@@ -20,6 +20,9 @@ module HumanApi
 
     def summary
       get '', access_token: token
+    rescue Nestful::UnauthorizedAccess
+      raise if HumanApi.config.raise_access_errors
+      false
     end
 
     def profile(options = {})
@@ -88,5 +91,8 @@ module HumanApi
         end
       end
     end
+  rescue Nestful::UnauthorizedAccess
+    raise if HumanApi.config.raise_access_errors
+    false
   end
 end
