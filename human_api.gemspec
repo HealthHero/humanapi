@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'human_api/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "healt_hero-human_api"
+  spec.name          = "health_hero-human_api"
   spec.version       = HumanApi::VERSION
   spec.authors       = ["Justin Aiken"]
   spec.email         = ["justin@gohealthhero.com"]
