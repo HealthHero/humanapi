@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/HealthHero/humanapi.svg?branch=master)][travis][![Gem Version](https://badge.fury.io/rb/health_hero-human_api.png)](http://badge.fury.io/rb/health_hero-human_api)
+
 # HumanApi
 
 This is Health Hero's fork of the HumanApi gem.  The original gem (`human_api`) is found at [https://github.com/humanapi/humanapi](https://github.com/humanapi/humanapi).
