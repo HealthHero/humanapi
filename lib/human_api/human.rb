@@ -1,6 +1,7 @@
 module HumanApi
   class Human < Nestful::Resource
 
+    attr_accessor :params, :success, :results, :options, :total_size, :next_page_link
     attr_reader :token
 
     endpoint 'https://api.humanapi.co'
@@ -13,7 +14,9 @@ module HumanApi
     }.freeze
 
     def initialize(options)
-      @token = options[:access_token]
+      @token   = options[:access_token]
+      @success = true
+      @results = []
       super
     end
 
@@ -37,94 +40,75 @@ module HumanApi
     # =============================================
 
     def query(method, options = {})
+      options.symbolize_keys!
+      @options = options
+
       unless AVAILABLE_METHODS.include? method.to_sym
         raise ArgumentError, "The method '#{method}' does not exist!"
       end
 
-      # From sym to string
       method = method.to_s
+      url    = "#{method}"
 
-      # The base of the url
-      url = "#{method}"
-
-      # If it is a singular word prepare for readings
       if method.is_singular?
-        if options[:readings] == true
-          url += "/readings"
-        end
+        url += "/readings" if options[:readings] == true
       else
-        if options[:summary] == true
-          url += "/summary"
-        end
+        url += "/summary" if options[:summary] == true
       end
 
-      # You passed a date
       if options[:date].present?
-        # Make a request for a specific date
         url += "/daily/#{options[:date]}"
-      # If you passed an id
       elsif options[:id].present?
-        # Make a request for a single
         url += "/#{options[:id]}"
       end
 
-      params = {access_token: token}
-      params.merge!(start_date: options[:start_date]) if options[:start_date].present?
-      params.merge!(end_date:   options[:end_date])   if options[:end_date].present?
+      @params = {access_token: token}
+      @params.merge!(start_date: options[:start_date]) if options[:start_date].present?
+      @params.merge!(end_date:   options[:end_date])   if options[:end_date].present?
 
       if options[:fetch_all]
-        success        = true
-        results        = []
-        first_request  = get url, params
-        total_size     = first_request.headers['x-total-count'].to_i
-        next_page_link = first_request.headers['link'].match(/<(https[^>]*)>/)[1] if first_request.headers['link']
-
-        if options[:handle_data]
-          JSON.parse(first_request.body).each do |data|
-            success = false unless options[:handle_data].call data
-          end
-          results = ['*'] * 50
-        else
-          results = results + JSON.parse(first_request.body)
-        end
-
+        fetch_page url
         while results.count < total_size
-          next_page      = Nestful.get next_page_link
-          next_page_link = next_page.headers['link'].match(/<(https[^>]*)>/)[1] if next_page.headers['link']
-
-          if options[:handle_data]
-            JSON.parse(next_page.body).each do |data|
-              success = false unless options[:handle_data].call(data)
-            end
-            results = results + (['*'] * 50)
-          else
-            results = results + JSON.parse(next_page.body)
-          end
+          fetch_page
         end
 
-        if options[:handle_data]
-          success
-        else
-          results
-        end
+        options[:handle_data] ? @success : results
       else
-        params.merge!(limit: options[:limit])   if options[:limit].present?
-        params.merge!(offset: options[:offset]) if options[:offset].present?
-
-        result = get url, params
-        if options[:return_metadata]
-          result
-        else
-          JSON.parse result.body
-        end
+        @params.merge!(limit: options[:limit])   if options[:limit].present?
+        @params.merge!(offset: options[:offset]) if options[:offset].present?
+        result = fetch_page url
+        options[:return_metadata] ? result : JSON.parse(result.body)
+      end
+    rescue Nestful::UnauthorizedAccess => e
+      if HumanApi.config.handle_access_error
+        HumanApi.config.handle_access_error.call e
+      else
+        raise if HumanApi.config.raise_access_errors
+        false
       end
     end
-  rescue Nestful::UnauthorizedAccess => e
-    if HumanApi.config.handle_access_error
-      HumanApi.config.handle_access_error.call e
-    else
-      raise if HumanApi.config.raise_access_errors
-      false
+
+  private
+
+    def fetch_page(url=nil)
+      if url
+        page        = get url, params
+        @total_size = page.headers['x-total-count'].to_i
+      else
+        page = Nestful.get next_page_link
+      end
+
+      @next_page_link = page.headers['link'].match(/<(https[^>]*)>/)[1] if page.headers['link']
+
+      if options[:handle_data]
+        JSON.parse(page.body).each do |data|
+          @success = false unless options[:handle_data].call data
+          @results << '*'
+        end
+      else
+        @results = @results + JSON.parse(page.body) if options[:fetch_all]
+        page
+      end
     end
   end
 end
