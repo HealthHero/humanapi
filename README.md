@@ -12,7 +12,7 @@ gem 'health_hero-human_api'
 
 #### Requirements
 
-- Ruby 1.9.3+
+- Ruby 2.0+
 - Activesupport
 - Activerecord if hooking into User model
 
