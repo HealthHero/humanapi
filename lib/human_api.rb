@@ -20,4 +20,5 @@ module HumanApi
 
   autoload :Human, 'human_api/human'
   autoload :App,   'human_api/app'
+  autoload :User,  'human_api/user'
 end
