@@ -89,6 +89,7 @@ The query method is meant to ask whatever you want whenever you want. Here are s
 :sleeps
 :weight
 :bmi
+:sources
 ```
 
 ### Query Options
