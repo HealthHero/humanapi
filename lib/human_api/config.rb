@@ -1,38 +1,27 @@
-
-# THE MODULE
 module HumanApi
-  # THE CLASS
   class Config
-    attr_accessor :app_id, :query_key, :human_model, :token_method_name, :hardcore
+    attr_accessor :app_id, :query_key, :human_model, :token_method_name, :hardcore, :raise_access_errors
 
     CHECK_THE_GUIDE = "Read the guide for more information. (https://github.com/Pazienti/humanapi)"
 
-    # Init some vars
     def initialize
-      @hardcore = false
+      @hardcore            = false
+      @raise_access_errors = false
     end
 
-    # Init some vars
     def configure
       rewrite_human_model
     end
 
-    # Rewrite the human model
     def rewrite_human_model
-      # Check if the human_model to use and the method name are present
-      if human_model.present? and token_method_name.present?
-
-        # Check if the method given exists in the given class
+      if human_model.present? && token_method_name.present?
         if human_model.instance_methods.include?(token_method_name)
 
-          # Rewrite the class adding a method
           human_model.class_eval do
             attr_accessor :human_var
 
-            # The method in the human_model class instance
             def human
-              # Initialize with the access token
-              @human_var ||= HumanApi::Human.new(:access_token => self.send(HumanApi.config.token_method_name.to_sym))
+              @human_var ||= HumanApi::Human.new(access_token: self.send(HumanApi.config.token_method_name.to_sym))
             end
           end
         else
