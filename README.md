@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/HealthHero/humanapi.svg?branch=master)][travis][![Gem Version](https://badge.fury.io/rb/health_hero-human_api.png)](http://badge.fury.io/rb/health_hero-human_api)
+![Build Status](https://img.shields.io/travis/HealthHero/humanapi.svg)
+![Gem Version](https://img.shields.io/gem/v/health_hero-human_api.svg)
 
 # HumanApi
 
