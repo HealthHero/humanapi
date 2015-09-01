@@ -8,9 +8,13 @@ module HumanApi
     # Get the humans of your app:
     def self.humans
       get 'users'
-    rescue Nestful::UnauthorizedAccess
-      raise if HumanApi.config.raise_access_errors
-      []
+    rescue Nestful::UnauthorizedAccess => e
+      if HumanApi.config.handle_access_error
+        HumanApi.config.handle_access_error.call e
+      else
+        raise if HumanApi.config.raise_access_errors
+        []
+      end
     end
 
     # Create a new human:
@@ -24,9 +28,13 @@ module HumanApi
         # Else tell me something went wrong:
         false # Nothing was created
       end
-    rescue Nestful::UnauthorizedAccess
-      raise if HumanApi.config.raise_access_errors
-      false
+    rescue Nestful::UnauthorizedAccess => e
+      if HumanApi.config.handle_access_error
+        HumanApi.config.handle_access_error.call e
+      else
+        raise if HumanApi.config.raise_access_errors
+        false
+      end
     end
   end
 end

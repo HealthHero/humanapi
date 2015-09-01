@@ -6,6 +6,7 @@ describe HumanApi::Config do
   it 'sets some defaults' do
     expect(config.hardcore).to            be false
     expect(config.raise_access_errors).to be false
+    expect(config.handle_access_error).to be nil
   end
 
   describe "#rewrite_human_model" do
