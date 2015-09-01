@@ -1,38 +1,34 @@
+require 'base64'
 
-# THE MODULE
 module HumanApi
-  # THE CLASS # TODO: Make it an instance of class HumanApi::App :(
   class App < Nestful::Resource
 
-    # The host of the api
     endpoint 'https://api.humanapi.co'
+    path     "/v1/apps/#{HumanApi.config.app_id}"
+    options  auth_type: :basic, user: HumanApi.config.query_key, password: ''
 
-    # The path of the api
-    path "/v1/apps/#{HumanApi.config.app_id}"
-
-    # This should be a private method
-    def self.authentication
-      Base64.encode64("#{HumanApi.config.query_key}:")
-    end
-
-    # Get the humans of your app
+    # Get the humans of your app:
     def self.humans
-      get("users", {}, {:headers => {"Authorization" => "Basic #{authentication}"}})
+      get 'users'
+    rescue Nestful::UnauthorizedAccess
+      raise if HumanApi.config.raise_access_errors
+      []
     end
 
-    # Create a new human
+    # Create a new human:
     def self.create_human(id)
-      # Make a call to create the user
-      response = post("users", {:externalId => id}, {:headers => {"Authorization" => "Basic #{authentication}"}})
+      response = post 'users', externalId: id
 
       # If the response is true
-      if response.status >= 200 and response.status < 300 # Leave it for now
+      if response.status >= 200 && response.status < 300 # Leave it for now
         JSON.parse response.body
-      # Else tell me something went wrong
       else
+        # Else tell me something went wrong:
         false # Nothing was created
       end
+    rescue Nestful::UnauthorizedAccess
+      raise if HumanApi.config.raise_access_errors
+      false
     end
-
   end
 end
