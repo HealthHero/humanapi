@@ -10,10 +10,15 @@ Add this line to your application's Gemfile:
 gem 'health_hero-human_api'
 ```
 
+#### Requirements
+
+- Ruby 1.9.3+
+- Activesupport
+- Activerecord if hooking into User model
+
 ## Configuration
 
 Let's say you have an User model as follows:
-
 
 ```ruby
 class User < ActiveRecord::Base
