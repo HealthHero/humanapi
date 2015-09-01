@@ -73,19 +73,40 @@ module HumanApi
       params.merge!(end_date:   options[:end_date])   if options[:end_date].present?
 
       if options[:fetch_all]
+        success        = true
         results        = []
         first_request  = get url, params
         total_size     = first_request.headers['x-total-count'].to_i
-        results        = results + JSON.parse(first_request.body)
         next_page_link = first_request.headers['link'].match(/<(https[^>]*)>/)[1] if first_request.headers['link']
+
+        if options[:handle_data]
+          JSON.parse(first_request.body).each do |data|
+            success = false unless options[:handle_data].call data
+          end
+          results = ['*'] * 50
+        else
+          results = results + JSON.parse(first_request.body)
+        end
 
         while results.count < total_size
           next_page      = Nestful.get next_page_link
           next_page_link = next_page.headers['link'].match(/<(https[^>]*)>/)[1] if next_page.headers['link']
-          results        = results + JSON.parse(next_page.body)
+
+          if options[:handle_data]
+            JSON.parse(next_page.body).each do |data|
+              success = false unless options[:handle_data].call(data)
+            end
+            results = results + (['*'] * 50)
+          else
+            results = results + JSON.parse(next_page.body)
+          end
         end
 
-        results
+        if options[:handle_data]
+          success
+        else
+          results
+        end
       else
         params.merge!(limit: options[:limit])   if options[:limit].present?
         params.merge!(offset: options[:offset]) if options[:offset].present?

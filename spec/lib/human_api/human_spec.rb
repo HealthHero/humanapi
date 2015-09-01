@@ -102,6 +102,23 @@ describe HumanApi::Human do
       it 'goes crazy and gets them all' do
         expect(response.count).to eq 234
       end
+
+      context "with a callback" do
+        let(:context) { '_fetch_all' }
+        let(:foo)     { double 'Nothing' }
+        let(:options) { {fetch_all: true, handle_data: ->data { foo.do_stuff data['id'] }} }
+
+        it 'calls the callback on them all' do
+          expect(foo).to receive(:do_stuff).exactly(234).times.and_return true
+          expect(response).to be true
+        end
+
+        it 'returns false if one errors' do
+          expect(foo).to receive(:do_stuff).exactly(:once).and_return false
+          expect(foo).to receive(:do_stuff).exactly(233).times.and_return true
+          expect(response).to be false
+        end
+      end
     end
   end
 
