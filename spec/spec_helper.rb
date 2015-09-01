@@ -10,8 +10,9 @@ HUMAN_API_CLIENT_ID     = ENV['HUMAN_API_CLIENT_ID']     || 'CLIENT_ID'
 HUMAN_API_CLIENT_SECRET = ENV['HUMAN_API_CLIENT_SECRET'] || 'CLIENT_SECRET'
 
 HumanApi.config do |c|
-  c.app_id    = HUMAN_API_CLIENT_ID
-  c.query_key = HUMAN_API_APP_ID
+  c.app_id        = HUMAN_API_CLIENT_ID
+  c.client_secret = HUMAN_API_CLIENT_SECRET
+  c.query_key     = HUMAN_API_APP_ID
 end
 
 VCR.configure do |config|

@@ -40,8 +40,9 @@ This configuration is really simple. I suggest it over the second one.
 Always remember to configure the initializer with the access keys:
 ```ruby
 HumanApi.config do |c|
-  c.app_id    = ENV['HUMANAPI_KEY']
-  c.query_key = ENV['HUMANAPI_SECRET']
+  c.app_id        = ENV['HUMANAPI_KEY']
+  c.query_key     = ENV['HUMANAPI_SECRET']
+  c.client_secret = ENV['HUMANAPI_CLIENT_SECRET']
 end
 ```
 
@@ -51,8 +52,9 @@ If you don't like that configuration, you can use a different one, writing right
 
 ```ruby
 HumanApi.config do |c|
-  c.app_id    = "<YOUR_APP_ID>"
-  c.query_key = "<YOUR_QUERY_KEY>"
+  c.app_id        = "<YOUR_APP_ID>"
+  c.query_key     = "<YOUR_QUERY_KEY>"
+  c.client_secret = "<YOUR__CLIENT_SECRET>"
 
   # This is the part where the magics happen
   c.human_model       = User           # Tell me what is the model you want to use

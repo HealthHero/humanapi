@@ -1,6 +1,6 @@
 module HumanApi
   class Config
-    attr_accessor :app_id, :query_key, :human_model, :token_method_name, :hardcore, :raise_access_errors, :handle_access_error
+    attr_accessor :app_id, :query_key, :client_secret, :human_model, :token_method_name, :hardcore, :raise_access_errors, :handle_access_error
 
     CHECK_THE_GUIDE = "Read the guide for more information. (https://github.com/Pazienti/humanapi)"
 
