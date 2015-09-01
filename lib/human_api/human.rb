@@ -77,11 +77,11 @@ module HumanApi
         first_request  = get url, params
         total_size     = first_request.headers['x-total-count'].to_i
         results        = results + JSON.parse(first_request.body)
-        next_page_link = first_request.headers['link'].match(/<(https[^>]*)>/)[1]
+        next_page_link = first_request.headers['link'].match(/<(https[^>]*)>/)[1] if first_request.headers['link']
 
         while results.count < total_size
           next_page      = Nestful.get next_page_link
-          next_page_link = next_page.headers['link'].match(/<(https[^>]*)>/)[1]
+          next_page_link = next_page.headers['link'].match(/<(https[^>]*)>/)[1] if next_page.headers['link']
           results        = results + JSON.parse(next_page.body)
         end
 
