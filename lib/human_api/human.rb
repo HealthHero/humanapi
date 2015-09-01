@@ -69,6 +69,8 @@ module HumanApi
       end
 
       params = {access_token: token}
+      params.merge!(start_date: options[:start_date]) if options[:start_date].present?
+      params.merge!(end_date:   options[:end_date])   if options[:end_date].present?
 
       if options[:fetch_all]
         results        = []
