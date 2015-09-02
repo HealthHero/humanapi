@@ -1,4 +1,4 @@
-require 'human_api'
+require 'health_hero-human_api'
 require 'webmock'
 require 'vcr'
 require 'pry'
