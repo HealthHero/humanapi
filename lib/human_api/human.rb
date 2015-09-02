@@ -54,7 +54,7 @@ module HumanApi
         url += "/readings" if options[:readings] == true
       else
         url += "/summary"   if options[:summary]   == true
-        url +- "/summaries" if options[:summaries] == true
+        url += "/summaries" if options[:summaries] == true
       end
 
       if options[:date].present?
