@@ -63,4 +63,12 @@ describe HumanApi::App do
       xit '.. need to think of a way to make this fail :p'
     end
   end
+
+  describe ".delete_human" do
+    it "returns true when all is well" do
+      VCR.use_cassette :delete_human_success do
+        expect(app.delete_human 'test_user').to eq true
+      end
+    end
+  end
 end

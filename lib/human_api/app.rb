@@ -36,5 +36,19 @@ module HumanApi
         false
       end
     end
+
+    # Delete a new human:
+    def self.delete_human(id)
+      response = delete "users/#{id}"
+
+      response.status >= 200 && response.status < 300
+    rescue Nestful::UnauthorizedAccess => e
+      if HumanApi.config.handle_access_error
+        HumanApi.config.handle_access_error.call e
+      else
+        raise if HumanApi.config.raise_access_errors
+        false
+      end
+    end
   end
 end
