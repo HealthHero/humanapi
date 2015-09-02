@@ -53,7 +53,8 @@ module HumanApi
       if method.is_singular?
         url += "/readings" if options[:readings] == true
       else
-        url += "/summary" if options[:summary] == true
+        url += "/summary"   if options[:summary]   == true
+        url +- "/summaries" if options[:summaries] == true
       end
 
       if options[:date].present?
