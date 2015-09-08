@@ -13,8 +13,8 @@ module HumanApi
       heart_rate height locations sleeps weight bmi sources
     }.freeze
 
-    def initialize(options)
-      @token   = options[:access_token]
+    def initialize(initial_options)
+      @token   = initial_options[:access_token]
       @success = true
       @results = []
       super
