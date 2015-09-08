@@ -80,13 +80,6 @@ module HumanApi
         result = fetch_page url
         options[:return_metadata] ? result : JSON.parse(result.body)
       end
-    rescue Nestful::UnauthorizedAccess => e
-      if HumanApi.config.handle_access_error
-        HumanApi.config.handle_access_error.call e
-      else
-        raise if HumanApi.config.raise_access_errors
-        false
-      end
     end
 
   private
@@ -109,6 +102,13 @@ module HumanApi
       else
         @results = @results + JSON.parse(page.body) if options[:fetch_all]
         page
+      end
+    rescue Nestful::UnauthorizedAccess => e
+      if HumanApi.config.handle_access_error
+        HumanApi.config.handle_access_error.call e
+      else
+        raise if HumanApi.config.raise_access_errors
+        false
       end
     end
   end
