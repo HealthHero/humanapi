@@ -11,7 +11,7 @@ module HumanApi
       JSON.parse(response.body)['publicToken']
     rescue Nestful::UnauthorizedAccess => e
       if HumanApi.config.handle_access_error
-        HumanApi.config.handle_access_error.call e
+        HumanApi.config.handle_access_error.call e, self
       else
         raise if HumanApi.config.raise_access_errors
         nil

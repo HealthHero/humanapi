@@ -10,7 +10,7 @@ module HumanApi
       get 'users'
     rescue Nestful::UnauthorizedAccess => e
       if HumanApi.config.handle_access_error
-        HumanApi.config.handle_access_error.call e
+        HumanApi.config.handle_access_error.call e, self
       else
         raise if HumanApi.config.raise_access_errors
         []
@@ -30,7 +30,7 @@ module HumanApi
       end
     rescue Nestful::UnauthorizedAccess => e
       if HumanApi.config.handle_access_error
-        HumanApi.config.handle_access_error.call e
+        HumanApi.config.handle_access_error.call e, self
       else
         raise if HumanApi.config.raise_access_errors
         false
@@ -44,7 +44,7 @@ module HumanApi
       response.status >= 200 && response.status < 300
     rescue Nestful::UnauthorizedAccess => e
       if HumanApi.config.handle_access_error
-        HumanApi.config.handle_access_error.call e
+        HumanApi.config.handle_access_error.call e, self
       else
         raise if HumanApi.config.raise_access_errors
         false

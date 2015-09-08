@@ -35,7 +35,7 @@ describe HumanApi::App do
 
     context "when unauthorized" do
       context "with a proc set" do
-        before { expect(HumanApi.config).to receive(:handle_access_error).exactly(:twice).and_return ->e { e.class.to_s } }
+        before { expect(HumanApi.config).to receive(:handle_access_error).exactly(:twice).and_return ->e,_ { e.class.to_s } }
 
         it 'calls the proc' do
           expect(app.create_human 'joe').to eq 'Nestful::UnauthorizedAccess'
