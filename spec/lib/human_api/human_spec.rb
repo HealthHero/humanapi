@@ -38,6 +38,16 @@ describe HumanApi::Human do
         expect(profile['defaultTimeZone']).to eq 'name' => "UTC"
       end
     end
+
+    context "with an error handler" do
+      let(:profile) { human.profile handle_access_error: ->e,h { @error = e; @human = h} }
+
+      it "calls it" do
+        expect(profile).to eq Hash.new
+        expect(@error).to be_an_instance_of Nestful::UnauthorizedAccess
+        expect(@human.attributes).to eq 'access_token' => 'token'
+      end
+    end
   end
 
   describe "#activities" do

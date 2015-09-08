@@ -78,7 +78,13 @@ module HumanApi
         @params.merge!(limit: options[:limit])   if options[:limit].present?
         @params.merge!(offset: options[:offset]) if options[:offset].present?
         result = fetch_page url
-        options[:return_metadata] ? result : JSON.parse(result.body)
+        if options[:return_metadata]
+          result
+        elsif result.present? && result.respond_to?(:body)
+          JSON.parse result.body
+        else
+          Hash.new
+        end
       end
     end
 
@@ -104,12 +110,16 @@ module HumanApi
         page
       end
     rescue Nestful::UnauthorizedAccess => e
-      if HumanApi.config.handle_access_error
-        HumanApi.config.handle_access_error.call e
+      @success = false
+      if options[:handle_access_error]
+        options[:handle_access_error].call e, self
+      elsif HumanApi.config.handle_access_error
+        HumanApi.config.handle_access_error.call e, self
       else
         raise if HumanApi.config.raise_access_errors
-        false
       end
+
+      false
     end
   end
 end
