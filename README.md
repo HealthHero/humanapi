@@ -21,7 +21,25 @@ gem 'health_hero-human_api'
 
 ## Configuration
 
-Let's say you have an User model as follows:
+### Initializer
+
+```ruby
+HumanApi.config do |c|
+  c.app_id        = ENV['HUMANAPI_KEY']
+  c.query_key     = ENV['HUMANAPI_SECRET']
+  c.client_secret = ENV['HUMANAPI_CLIENT_SECRET']  
+
+  # Optional:
+  # If a Nestful::UnauthorizedAccess error occurs, this proc will handle it:
+  c.handle_access_error = ->e,context { Airbrake.notify e; do_something_with(context) }
+
+  # If you don't want to handle it, and want it raised:
+  # (Note - if you set a proc above, this setting is ignored)
+  c.raise_access_errors = true # Default is false
+end
+```
+
+### User model
 
 ```ruby
 class User < ActiveRecord::Base
@@ -35,34 +53,18 @@ class User < ActiveRecord::Base
 end
 ```
 
-This configuration is really simple. I suggest it over the second one.
-
-Always remember to configure the initializer with the access keys:
-```ruby
-HumanApi.config do |c|
-  c.app_id        = ENV['HUMANAPI_KEY']
-  c.query_key     = ENV['HUMANAPI_SECRET']
-  c.client_secret = ENV['HUMANAPI_CLIENT_SECRET']
-end
-```
-
-### The alternative
-
-If you don't like that configuration, you can use a different one, writing right into the initializer:
+You can also configure it the initializer:
 
 ```ruby
 HumanApi.config do |c|
-  c.app_id        = "<YOUR_APP_ID>"
-  c.query_key     = "<YOUR_QUERY_KEY>"
-  c.client_secret = "<YOUR__CLIENT_SECRET>"
-
+  ...
   # This is the part where the magics happen
   c.human_model       = User           # Tell me what is the model you want to use
   c.token_method_name = :human_token   # Tell me the method you use to retrieve the token (Inside the human_model)
 end
 ```
 
-It should work in both ways, the choice is yours.
+It should work both ways, the choice is yours.
 
 ## Usage
 Once you did the configuration, the usage of the gem is quite easy:
@@ -116,6 +118,9 @@ u.human.query(:activities, limit: 3, offset: 50).count #=> 3
 # Return all of a user's data jammed together, despite being across multiple pages:
 u.human.query(:activities).count                  #=> 50
 u.human.query(:activities, fetch_all: true).count #=> 321
+
+# Return all of a user's data jammed together, and handle unauthorized errors:
+u.human.query(:activities, fetch_all: true, handle_access_error: ->error, context { do_something_with(error, context)})
 ```
 
 Lastly, as a common rule, I've identified a pattern in humanapis.
@@ -124,7 +129,7 @@ Lastly, as a common rule, I've identified a pattern in humanapis.
 
 ## Common errors and troubleshooting
 
-### 'rewrite_human_model': Could not find 'token' in User
-- Causes: it does mean that the method you suggested does not exist!
-- What to check: Check if you misspelled the method name or the attribute does not exist.
-- Solving: If this does not solve, try using the humanizable function passing a method you can create in your model to retrieve manually just the token.
+- `rewrite_human_model`: Could not find `token` in `User`
+  - Causes: It means that the method you suggested as `:humanizable` does not exist!
+  - What to check: Check if you misspelled the method name or the attribute does not exist.
+  - Solving: If this does not solve, try using the `:humanizable` function passing a method you can create in your model to retrieve manually just the token.
