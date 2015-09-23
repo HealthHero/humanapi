@@ -69,8 +69,8 @@ module HumanApi
 
       if options[:fetch_all]
         fetch_page url
-        while results.count < total_size
-          fetch_page
+        if total_size.present?
+          fetch_page while results.count < total_size
         end
 
         options[:handle_data] ? @success : results
