@@ -102,12 +102,7 @@ Mixing up these methods with some options will give you what you want:
 ```ruby
 u.human.query(:activities, summary: true)  #=> will give you a summary of the activities
 u.human.query(:sleeps, date: "2014-01-01") #=> Will give you a single sleep measurement
-
-# Getting KPIs (KPIs are just single values you get to retrieve a measurements average value)
-u.human.query(:weight) #=> Will give you a single weight value (The avg I guess)
-
-# Getting readings (If you begin with a single avg value and you wanna go deeper)
-u.human.query(:weight, readings: true)
+u.human.query(:weight)                     #=> Will give you a single weight value
 
 # Return metadata (not just the array of hashes)
 u.human.query(:activities, return_metadata: true) #=> Nestful::Response object, with headers and body available
@@ -125,7 +120,6 @@ u.human.query(:activities, fetch_all: true, handle_access_error: ->error, contex
 
 Lastly, as a common rule, I've identified a pattern in humanapis.
 - If the method name is plural, it will give you multiple measurements when calling it. In addition, you can ask for a summary: true, for a group of value in a specific date: "DATE" or for a single known measurement id: "measurement_id"
-- If the method name is singular, it will give you a single avg value for what you asked. In addition, you can ask for all readings: true and for all readings => true in a specific date: "DATE".
 
 ## Common errors and troubleshooting
 
