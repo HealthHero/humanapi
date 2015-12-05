@@ -10,7 +10,7 @@ module HumanApi
     # The available methods for this api
     AVAILABLE_METHODS = %i{
       profile activities blood_glucose blood_oxygen blood_pressure body_fat genetic_traits
-      heart_rate height locations sleeps weight bmi sources
+      heart_rate height locations sleeps weight bmi sources meals
     }.freeze
 
     def initialize(initial_options)
