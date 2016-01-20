@@ -50,6 +50,8 @@ module HumanApi
       method = method.to_s
       url    = "#{method}"
 
+      url = "food/#{url}" if method == "meals"
+
       if method.is_singular?
         url += "/readings" if options[:readings] == true
       else
